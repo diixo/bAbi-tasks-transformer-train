@@ -30,7 +30,7 @@ def get_next_qa(dataset):
                     context = context.strip()
                     yield context, question, answer
                 else:
-                    context += f"{sent}\n"
+                    context += f" {sent}"
 
 
 class BabiqaDataset():
