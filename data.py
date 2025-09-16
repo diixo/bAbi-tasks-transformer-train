@@ -70,7 +70,7 @@ class BabiqaDataset():
         return len(self.data)
 
 
-def collate_data(batch,padding_value,label_padding_value=-100):
+def collate_data(batch, padding_value, label_padding_value=-100):
     new_batch = defaultdict(lambda:[])
     for x in batch:
         for x_key in x.keys():

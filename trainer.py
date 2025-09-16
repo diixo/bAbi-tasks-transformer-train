@@ -40,6 +40,22 @@ class Trainer(DefaultTrainer):
         return self.lr_scheduler
 
 
+def make_dataset(tasks_amount=20, extended="default"):
+    train_ds = ConcatDataset(
+        [
+            BabiqaDataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
+    test_ds = ConcatDataset(
+        [
+            BabiqaDataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
+    return train_ds, test_ds
+
+
 if __name__ == "__main__":
 
     sys.argv = create_test_args()
@@ -49,18 +65,7 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)
     model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
 
-    train_dataset = ConcatDataset(
-        [
-            BabiqaDataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
-            for task_id in range(20)
-        ]
-    )
-    test_dataset = ConcatDataset(
-        [
-            BabiqaDataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
-            for task_id in range(20)
-        ]
-    )
+    train_dataset, test_dataset = make_dataset(1)
 
     training_args = TrainingArguments(
         output_dir="my_model",
@@ -80,7 +85,11 @@ if __name__ == "__main__":
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=test_dataset,
-        data_collator=lambda x: collate_data(x, padding_value=tokenizer.eos_token_id, label_padding_value=tokenizer.eos_token_id),
+        data_collator=lambda x: collate_data(
+            x,
+            padding_value=tokenizer.eos_token_id,
+            label_padding_value=tokenizer.eos_token_id
+        ),
     )
 
     trainer.train()
