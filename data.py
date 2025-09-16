@@ -37,7 +37,7 @@ class BabiqaDataset():
 
     def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, retrun_object=False) -> None:
         self.tokenizer:PreTrainedTokenizer = tokenizer
-        dataset = load_dataset('babi_qa', type='en', task_no=task_no)[split]
+        dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
         self.data = list(get_next_qa(dataset))
         self.no_answer = no_answer
         self.retrun_object = retrun_object

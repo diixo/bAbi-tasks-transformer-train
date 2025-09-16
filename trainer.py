@@ -10,8 +10,8 @@ import argparse
 def create_test_args() -> list:
     return [
         "trainer.py",
-        "model_name_or_id", "gpt2",
-        "--lr", "1e-4",
+        "gpt2",
+        "-lr", "2e-4",
         "-epoch", "5",
         "-batch_size", "8",
     ]
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         weight_decay=0.0,
         push_to_hub=False,
         load_best_model_at_end=True,
-        per_gpu_train_batch_size=args.batch_size,
+        per_device_train_batch_size=args.batch_size,
         gradient_accumulation_steps=args.gradient_accumulation
     )
 
