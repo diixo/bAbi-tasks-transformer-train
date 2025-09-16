@@ -70,7 +70,7 @@ if __name__ == "__main__":
     training_args = TrainingArguments(
         output_dir="my_model",
         save_strategy="epoch",
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         learning_rate=args.lr,
         num_train_epochs=args.epoch,
         weight_decay=0.0,
