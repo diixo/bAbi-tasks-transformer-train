@@ -77,11 +77,15 @@ def collate_data(batch, padding_value, label_padding_value=-100):
             new_batch[x_key].append(x[x_key][0])
     
     new_batch = dict(new_batch)
+
     for batch_key in new_batch.keys():
         if batch_key == "labels":
             new_batch[batch_key] = pad_sequence(new_batch[batch_key], batch_first=True, padding_value=label_padding_value)
         else:
             new_batch[batch_key] = pad_sequence(new_batch[batch_key], batch_first=True, padding_value=padding_value)
-    
+
+    if "input_ids" in new_batch:
+        new_batch["attention_mask"] = (new_batch["input_ids"] != padding_value).long()
+
     return new_batch
 
