@@ -7,13 +7,22 @@ import sys
 import argparse
 
 
+def create_test_args() -> list:
+    return [
+        "trainer.py",
+        "model_name_or_id", "gpt2",
+        "--lr", "1e-4",
+        "-epoch", "5",
+        "-batch_size", "8",
+    ]
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("model_name_or_id")
 parser.add_argument('-lr', default=3e-4, type=float)
 parser.add_argument('-batch_size', default=6, type=int)
 parser.add_argument('-epoch', default=3, type=int)
 parser.add_argument('-ga', '--gradient_accumulation', default=1, type=int)
-args = parser.parse_args()
 
 
 class Trainer(DefaultTrainer):
@@ -30,43 +39,50 @@ class Trainer(DefaultTrainer):
             )
         return self.lr_scheduler
 
-tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)
-model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
 
-train_dataset = ConcatDataset(
-    [
-        BabiqaDataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
-        for task_id in range(20)
-    ]
-)
-test_dataset = ConcatDataset(
-    [
-        BabiqaDataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
-        for task_id in range(20)
-    ]
-)
+if __name__ == "__main__":
 
-training_args = TrainingArguments(
-    output_dir="my_model",
-    save_strategy="epoch",
-    evaluation_strategy="epoch",
-    learning_rate=args.lr,
-    num_train_epochs=args.epoch,
-    weight_decay=0.0,
-    push_to_hub=False,
-    load_best_model_at_end=True,
-    per_gpu_train_batch_size=args.batch_size,
-    gradient_accumulation_steps=args.gradient_accumulation
-)
+    sys.argv = create_test_args()
 
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=train_dataset,
-    eval_dataset=test_dataset,
-    data_collator=lambda x: collate_data(x, padding_value=tokenizer.eos_token_id, label_padding_value=tokenizer.eos_token_id),
-)
+    args = parser.parse_args()
 
-trainer.train()
-trainer.save_model("my_model/best")
-tokenizer.save_pretrained("my_model/best")
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)
+    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
+
+    train_dataset = ConcatDataset(
+        [
+            BabiqaDataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
+            for task_id in range(20)
+        ]
+    )
+    test_dataset = ConcatDataset(
+        [
+            BabiqaDataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
+            for task_id in range(20)
+        ]
+    )
+
+    training_args = TrainingArguments(
+        output_dir="my_model",
+        save_strategy="epoch",
+        evaluation_strategy="epoch",
+        learning_rate=args.lr,
+        num_train_epochs=args.epoch,
+        weight_decay=0.0,
+        push_to_hub=False,
+        load_best_model_at_end=True,
+        per_gpu_train_batch_size=args.batch_size,
+        gradient_accumulation_steps=args.gradient_accumulation
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        data_collator=lambda x: collate_data(x, padding_value=tokenizer.eos_token_id, label_padding_value=tokenizer.eos_token_id),
+    )
+
+    trainer.train()
+    trainer.save_model("my_model/best")
+    tokenizer.save_pretrained("my_model/best")
