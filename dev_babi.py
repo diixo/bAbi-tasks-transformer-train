@@ -38,17 +38,19 @@ context = ""
 
 for action in actions:
 
-    context += f"### context: {action}\n"
+    context += f"###context: {action}\n"
 
     slots = make_slots_set(action, slots.copy())
 
     example_text = (
         context +
-        "### slots " + str(slots) + "\n" +
-        "### system " + "OK.\n"   # Stub of answer
+        "###slots " + str(slots) + "\n" +
+        "###system " + "OK.\n"   # Stub of answer
     )
     #print(example_text)
     training_examples.append(example_text)
+
+print(slots)
 
 #################################################
 from transformers import GPT2Tokenizer
@@ -87,7 +89,11 @@ for i, text in enumerate(training_examples):
     # маскируем именно эти токены
     labels[i, :len(tokens_to_ignore)] = -100
 
-    print("Full input_ids:", input_ids[i].tolist())
-    print("Full lbls_ids:", labels[i].tolist())
-    print("Full attn_ids:", attn_mask[i].tolist())
+    item_idxs = input_ids[i].tolist()
+    item_lbls = labels[i].tolist()
+    item_mask = attn_mask[i].tolist()
+
+    print("Full input_ids:", item_idxs)
+    print("Full lbls_ids:", item_lbls)
+    print("Full attn_ids:", item_mask)
     print(text + "\n*****************************")
