@@ -30,3 +30,17 @@ Fine tune and evaluate transformer model on facebook's bAbi tasks.
 ## Acknowledgements:
 
 Based on original: https://github.com/p208p2002/bAbi-tasks-with-transformer-model
+
+## Description
+
+Разделив обучение на **два вида сэмплов**, ты чётко учишь:
+
+* одна подзадача = **трекер слотов памяти (текущих состояний)**,
+
+* вторая подзадача = **генератор ответа**.
+
+### В итоге будет пайплайн:
+
+* 1. User turn + context → Slot-states (обновлённый). Тут System-response можно вообще не добавлять.
+
+* 2. Slot-states + User turn → System-response.
