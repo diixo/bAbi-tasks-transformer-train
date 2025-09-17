@@ -79,3 +79,35 @@ for i, text in enumerate(training_examples):
 # Теперь input_ids + labels можно использовать для SFT тренировки GPT-2
 print("Input IDs shape:", input_ids.shape)
 print("Labels shape:", labels.shape)
+
+######### correct paddings #########
+
+batch = tokenizer(training_examples,
+                  padding=True,
+                  truncation=True,
+                  return_tensors="pt")
+
+input_ids = batch["input_ids"]
+attention_mask = batch["attention_mask"]
+
+labels = input_ids.clone()
+
+# 1) Маскируем паддинги
+labels[attention_mask == 0] = -100
+
+# 2) Маскируем контекст до "###slots"
+for i, text in enumerate(training_examples):
+    # находим границу контекста
+    context_len = text.find("###slots")
+    if context_len == -1:
+        continue  # если маркер не найден — пропускаем
+
+    # токенизируем только часть до "###slots"
+    tokens_to_ignore = tokenizer(text[:context_len], add_special_tokens=False)["input_ids"]
+
+    # маскируем именно эти токены
+    labels[i, :len(tokens_to_ignore)] = -100
+    lbl = labels[i,:]
+    print(lbl)
+    print(text)
+    print()
