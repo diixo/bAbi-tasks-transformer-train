@@ -11,7 +11,7 @@ def create_test_args() -> list:
     return [
         "trainer.py",
         "gpt2",
-        "-dataset", "ext",
+        #"-dataset", "ext", # switch ext->babi
         "-lr", "2e-4",
         "-epoch", "5",
         "-batch_size", "8",
