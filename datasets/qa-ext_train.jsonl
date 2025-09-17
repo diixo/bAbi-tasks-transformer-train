@@ -1,0 +1,25 @@
+
+{ "context": "James would like to order a T-shirt.", "input": "What James would like to order?", "output": "T-shirt" }
+{ "context": "James want to order a T-shirt.", "input": "What James want to order?", "output": "T-shirt" }
+{ "context": "James would like to buy a T-shirt.", "input": "What James would like to buy?", "output": "T-shirt" }
+{ "context": "James want to buy a T-shirt.", "input": "What James want to buy?", "output": "T-shirt" }
+{ "context": "James would like to purchase a T-shirt.", "input": "What James would like to purchase?", "output": "T-shirt" }
+{ "context": "James want to purchase a T-shirt.", "input": "What James want to purchase?", "output": "T-shirt" }
+
+{ "context": "James ordered the T-shirt. Susan ordered the shampoo.", "input": "What did James order?", "output": "T-shirt"}
+{ "context": "Patrick ordered the Jeans. Jennifer ordered the lotion. What did Patrick order?", "input": "What did Jeniffer order?", "output": "lotion"}
+
+{ "context": "James placed an order for a T-shirt. Susan placed an order for a dress.", "input" :"What did James order?", "output": "T-shirt"}
+{ "context": "James placed an order for a Jeans. Jenifer placed an order for a shampoo.", "input" :"What did James order?", "output": "Jeans"}
+
+{ "context": "James placed an order to purchase a T-shirt. Susan placed an order to purchase a dress.", "input" :"What did Susan order?", "output": "dress"}
+{ "context": "James placed an order to purchase a Jeans. Jenifer placed an order to purchase a shampoo.", "input" :"What did Jenifer order?", "output": "shampoo"}
+
+{ "context": "James ordered the T-shirt. Susan ordered the shampoo. Jennifer ordered the skirt.", "input" :"What did James order?", "output": "T-shirt"}
+{ "context": "Patrick ordered the Jeans. Jennifer ordered the lotion. James ordered the shirt.", "input" :"What did Patrick order?", "output": "Jeans"}
+
+
+{ "context": "Olivia placed an order for a hat. The order for the hat was cancelled.", "input" : "What is the status of Olivia's order?", "output": "cancelled"}
+{ "context": "Emma placed an order for jeans. The order for the jeans is still pending.", "input" : "What is the status of Emma's order?", "output": "pending"}
+{ "context": "James placed an order for a T-shirt. The order for the T-shirt was shipped.", "input" :"What is the status of James's order?", "output": "shipped"}
+{ "context": "James placed an order for a T-shirt. The order for the T-shirt was confirmed.", "input" :"What is the status of James's order?", "output": "confirmed"}

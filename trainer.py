@@ -1,5 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer as DefaultTrainer
-from data import collate_data, BabiqaDataset
+from data import collate_data, BabiQADataset
 from torch.utils.data import ConcatDataset
 import torch
 from transformers.optimization import get_scheduler
@@ -11,6 +11,7 @@ def create_test_args() -> list:
     return [
         "trainer.py",
         "gpt2",
+        "-dataset", "ext",
         "-lr", "2e-4",
         "-epoch", "5",
         "-batch_size", "8",
@@ -19,6 +20,7 @@ def create_test_args() -> list:
 
 parser = argparse.ArgumentParser()
 parser.add_argument("model_name_or_id")
+parser.add_argument("-dataset", default="qa", type=str)
 parser.add_argument('-lr', default=3e-4, type=float)
 parser.add_argument('-batch_size', default=6, type=int)
 parser.add_argument('-epoch', default=3, type=int)
@@ -40,19 +42,23 @@ class Trainer(DefaultTrainer):
         return self.lr_scheduler
 
 
-def make_dataset(tasks_amount=20, extended="default"):
-    train_ds = ConcatDataset(
-        [
-            BabiqaDataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
-            for task_id in range(tasks_amount)
-        ]
-    )
-    test_ds = ConcatDataset(
-        [
-            BabiqaDataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
-            for task_id in range(tasks_amount)
-        ]
-    )
+def make_dataset(tasks_amount=20, dataset="default"):
+    if dataset == "ext":
+        train_ds = ConcatDataset([ BabiQADataset(tokenizer, split="train", task_no="ext") ])
+        test_ds  = ConcatDataset([ BabiQADataset(tokenizer, split="test", task_no="ext") ])
+    else:
+        train_ds = ConcatDataset(
+            [
+                BabiQADataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
+                for task_id in range(tasks_amount)
+            ]
+        )
+        test_ds = ConcatDataset(
+            [
+                BabiQADataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
+                for task_id in range(tasks_amount)
+            ]
+        )
     return train_ds, test_ds
 
 
@@ -65,7 +71,7 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)
     model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
 
-    train_dataset, test_dataset = make_dataset(1)
+    train_dataset, test_dataset = make_dataset(1, args.dataset)
 
     training_args = TrainingArguments(
         output_dir="my_model",

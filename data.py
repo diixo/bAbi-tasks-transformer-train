@@ -2,18 +2,31 @@ from datasets import load_dataset
 from transformers import PreTrainedTokenizer
 from torch.nn.utils.rnn import pad_sequence
 from collections import defaultdict
-# tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+import json
+
 
 INPUT_TEMPLATE = """
-Context:
+###Context:
 {context}
 
-Question:
+###Question:
 {question}
 
-Answer:
+###Answer:
 {answer}
 """
+
+
+def load_babi_jsonl(file_path: str) -> list:
+    items = []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                item = json.loads(line)
+                items.append((item["context"], item["input"], item["output"]))
+    return items
+
 
 def get_next_qa(dataset):
     for x in dataset:
@@ -33,16 +46,23 @@ def get_next_qa(dataset):
                     context += f" {sent}"
 
 
-class BabiqaDataset():
+class BabiQADataset():
 
     def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, retrun_object=False) -> None:
-        self.tokenizer:PreTrainedTokenizer = tokenizer
-        dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
-        self.data = list(get_next_qa(dataset))
+        self.data = list()
+        if task_no == "ext":
+            if split in {"train", "test",}:
+                self.data = load_babi_jsonl(f"datasets/qa-ext_{split}.jsonl")
+        else:
+            dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
+            self.data = list(get_next_qa(dataset))
+
+        self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
         self.retrun_object = retrun_object
-    
-    def __getitem__(self,index):
+
+
+    def __getitem__(self, index):
         context, question, answer = self.data[index]
         cqa = {
             "context": context,
@@ -50,20 +70,18 @@ class BabiqaDataset():
             "answer": answer
         }
         
-        
         if self.retrun_object:
             return cqa
 
         if self.no_answer:
             cqa["answer"] = ""
         
-        
         input_text = INPUT_TEMPLATE.format_map(cqa).strip()
         encodings = self.tokenizer(input_text, truncation=True, max_length=384, return_tensors="pt")
         encodings["labels"] = encodings["input_ids"].clone()
         return {
-            "input_ids":encodings["input_ids"],
-            "labels":encodings["labels"]
+            "input_ids": encodings["input_ids"],
+            "labels": encodings["labels"]
         }
     
     def __len__(self):
