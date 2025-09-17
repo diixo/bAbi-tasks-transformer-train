@@ -88,12 +88,12 @@ batch = tokenizer(training_examples,
                   return_tensors="pt")
 
 input_ids = batch["input_ids"]
-attention_mask = batch["attention_mask"]
+attn_mask = batch["attention_mask"]
 
 labels = input_ids.clone()
 
 # 1) Маскируем паддинги
-labels[attention_mask == 0] = -100
+labels[attn_mask == 0] = -100
 
 # 2) Маскируем контекст до "###slots"
 for i, text in enumerate(training_examples):
@@ -107,7 +107,10 @@ for i, text in enumerate(training_examples):
 
     # маскируем именно эти токены
     labels[i, :len(tokens_to_ignore)] = -100
-    lbl = labels[i,:]
-    print(lbl)
+
+    # как вывести массив индексов для конкретного... 
+    print("Full input_ids:", input_ids[i].tolist())
+    print("Full lbls_ids:", labels[i].tolist())
+    print("Full attn_ids:", attn_mask[i].tolist())
     print(text)
     print()
