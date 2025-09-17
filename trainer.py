@@ -42,23 +42,21 @@ class Trainer(DefaultTrainer):
         return self.lr_scheduler
 
 
-def make_dataset(tasks_amount=20, dataset="default"):
-    if dataset == "ext":
-        train_ds = ConcatDataset([ BabiQADataset(tokenizer, split="train", task_no="ext") ])
-        test_ds  = ConcatDataset([ BabiQADataset(tokenizer, split="test", task_no="ext") ])
-    else:
-        train_ds = ConcatDataset(
-            [
-                BabiQADataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
-                for task_id in range(tasks_amount)
-            ]
-        )
-        test_ds = ConcatDataset(
-            [
-                BabiQADataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
-                for task_id in range(tasks_amount)
-            ]
-        )
+def make_dataset(tasks_amount=0, dataset="default"):
+    if tasks_amount == 0:
+        tasks_amount = 20
+    train_ds = ConcatDataset(
+        [
+            BabiQADataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
+    test_ds = ConcatDataset(
+        [
+            BabiQADataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
     return train_ds, test_ds
 
 
