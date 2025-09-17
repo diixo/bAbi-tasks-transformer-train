@@ -17,17 +17,6 @@ INPUT_TEMPLATE = """
 """
 
 
-def load_babi_jsonl(file_path: str) -> list:
-    items = []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                item = json.loads(line)
-                items.append((item["context"], item["input"], item["output"]))
-    return items
-
-
 def get_next_qa(dataset):
     for x in dataset:
         story = x.get('story', None)
@@ -46,16 +35,13 @@ def get_next_qa(dataset):
                     context += f" {sent}"
 
 
-class BabiQADataset():
+class BabiQADatasetSlots():
 
     def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, retrun_object=False) -> None:
         self.data = list()
-        if task_no == "ext":
-            if split in {"train", "test",}:
-                self.data = load_babi_jsonl(f"datasets/qa-ext_{split}.jsonl")
-        else:
-            dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
-            self.data = list(get_next_qa(dataset))
+
+        dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
+        self.data = list(get_next_qa(dataset))
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
