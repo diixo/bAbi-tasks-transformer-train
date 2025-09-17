@@ -6,13 +6,13 @@ import json
 
 
 INPUT_TEMPLATE = """
-###Context:
+### Context:
 {context}
 
-###Question:
+### Question:
 {question}
 
-###Answer:
+### Answer:
 {answer}
 """
 
