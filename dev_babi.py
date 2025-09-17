@@ -1,38 +1,18 @@
 
-def str_tokenize_words(s: str):
-    import re
-    s = re.findall("(\.?\w[\w'\.&-]*\w|\w\+*#?)", s)
-    if s: return s
-    return []
+from data_slots import make_slots_set
 
 
 actions = [
     "Mary moved to the bathroom.",
     "John went to the hallway.",
     "Daniel went back to the hallway.",
-    "Sandra moved to the garden."
+    "Sandra moved to the garden.",
 ]
-
-persons = { "Sandra", "Daniel", "John", "Mary", }
-
-locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
 
 slots = {}
 
-
-def make_slots_set(event, slot_list):
-    words = str_tokenize_words(event)
-
-    person = ""
-    for w in words:
-        if w in persons:
-            person = w
-
-        if w in locations:
-            slot_list[person] = { "location": w }
-    return slot_list
-
 #################################################
+
 training_examples = []
 context = ""
 

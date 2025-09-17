@@ -5,6 +5,29 @@ from collections import defaultdict
 import json
 
 
+def str_tokenize_words(s: str):
+    import re
+    s = re.findall("(\.?\w[\w'\.&-]*\w|\w\+*#?)", s)
+    if s: return s
+    return []
+
+persons = { "Sandra", "Daniel", "John", "Mary", }
+
+locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
+
+def make_slots_set(event, slot_list):
+    words = str_tokenize_words(event)
+    person = ""
+    for w in words:
+        if w in persons:
+            person = w
+
+        if w in locations:
+            slot_list[person] = { "location": w }
+    return slot_list
+
+#####################################################################
+
 INPUT_TEMPLATE = """
 ### Context:
 {context}
