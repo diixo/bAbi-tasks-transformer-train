@@ -61,27 +61,6 @@ tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 tokenizer.pad_token = tokenizer.eos_token
 
 
-encodings = tokenizer(training_examples, return_tensors="pt", padding=True, truncation=True)
-input_ids = encodings["input_ids"]
-attention_mask = encodings["attention_mask"]
-
-# Labels для causal LM: игнорируем токены контекста
-labels = input_ids.clone()
-for i, text in enumerate(training_examples):
-    context_len = text.find("###slots")
-    tokens_to_ignore = tokenizer(text[:context_len])["input_ids"]
-    labels[i, :len(tokens_to_ignore)] = -100
-    # lbl = labels[i,:]
-    # print(lbl)
-    # print(text)
-    # print()
-
-# Теперь input_ids + labels можно использовать для SFT тренировки GPT-2
-print("Input IDs shape:", input_ids.shape)
-print("Labels shape:", labels.shape)
-
-######### correct paddings #########
-
 batch = tokenizer(training_examples,
                   padding=True,
                   truncation=True,
