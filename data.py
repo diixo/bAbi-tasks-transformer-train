@@ -1,8 +1,5 @@
 from datasets import load_dataset   
 from transformers import PreTrainedTokenizer
-from torch.nn.utils.rnn import pad_sequence
-from collections import defaultdict
-import json
 
 
 INPUT_TEMPLATE = """
@@ -35,7 +32,7 @@ def get_next_qa(dataset):
                     context += f" {sent}"
 
 
-class BabiQADataset():
+class BabiqaDatasetEval():
 
     def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
 
