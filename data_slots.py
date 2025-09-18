@@ -75,7 +75,7 @@ class BabiQADatasetSlots():
             enc_output,                                                     # (1, M)
             torch.tensor([[self.tokenizer.eos_token_id]], dtype=torch.long) # (1, 1)
         ], dim=1)                                                           # (1, N + M + 1)
-        
+
         # create new array
         labels = input_ids.clone()
 
@@ -86,6 +86,7 @@ class BabiQADatasetSlots():
             "input_ids": input_ids,
             "labels": labels,
         }
+
     def __len__(self):
         return len(self.data)
 
