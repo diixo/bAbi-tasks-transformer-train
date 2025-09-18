@@ -22,6 +22,14 @@ def str_tokenize_words(s: str):
     return []
 
 
+def dict_to_str(dictionary: dict):
+    slot_str = " ".join(
+        f"{name}=" + " ".join(f"{k}:{v};" for k, v in attrs.items())
+        for name, attrs in dictionary.items()
+    )
+    return slot_str
+
+
 persons = { "Sandra", "Daniel", "John", "Mary", }
 locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
 
@@ -40,8 +48,66 @@ def parse_to_slots(context: str) -> str:
         if w in locations and person is not None:
             slot_list[person] = { "location": w }
 
-    slot_str = " ".join(
-        f"{name}=" + " ".join(f"{k}:{v};" for k, v in attrs.items())
-        for name, attrs in slot_list.items()
-    )
-    return slot_str
+    return dict_to_str(slot_list)
+
+
+
+def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
+    slots = {}
+    holders = {}  # какой предмет у кого
+    
+    for line in story.strip().split("\n"):
+        # убираем номер в начале
+        line = line.strip()
+        # if re.match(r"^\d+", line):
+        #     line = " ".join(line.split()[1:])
+
+        # перемещение персонажа
+        m = re.match(r"(\w+) (moved|journeyed|went).* to the (\w+)", line)
+        if m:
+            name, _, place = m.groups()
+            slots[name] = {"location": place}
+            # обновляем предметы, которые у этого персонажа
+            for obj, holder in holders.items():
+                if holder == name:
+                    slots[obj] = {"location": place}
+
+        # персонаж взял объект
+        for obj in objects:
+            if re.search(fr"(\w+) (got|took|grabbed|picked up) the {obj}", line):
+                name = line.split()[0]
+                holders[obj] = name
+                slots[obj] = {"with": name}
+
+        # персонаж положил объект
+        for obj in objects:
+            if re.search(fr"(\w+) (dropped|left) the {obj}", line):
+                name = line.split()[0]
+                if holders.get(obj) == name:
+                    del holders[obj]
+                    # объект остаётся в текущей локации персонажа
+                    slots[obj] = {"location": slots[name]["location"]}
+
+    # финальная нормализация: все "with" → "location"
+    for obj, state in slots.items():
+        if "with" in state:
+            holder = state["with"]
+            if holder in slots and "location" in slots[holder]:
+                slots[obj] = {"location": slots[holder]["location"]}
+
+    return dict_to_str(slots)
+
+
+def test():
+
+    story = """Mary moved to the bathroom.
+    Sandra journeyed to the bedroom.
+    Mary got the football there.
+    John went to the kitchen.
+    Mary went back to the kitchen.
+    Mary went back to the garden."""
+
+    slots = parse_sequence_slots(story)
+    print(slots)
+
+test()
