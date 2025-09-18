@@ -1,6 +1,6 @@
 import evaluate
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from data_slots import BabiQADatasetSlots
+from data import BabiQADataset
 from utils import parse_answer
 import torch
 import pandas as pd
@@ -16,9 +16,9 @@ model.to(device)
 
 for task_id in range(1):
     task_no = f"qa{task_id+1}"
-    test_dataset = BabiQADatasetSlots(tokenizer, split="test", task_no=task_no)
-    test_dataset_raw = BabiQADatasetSlots(
-        tokenizer, split="test", retrun_object=True, task_no=task_no
+    test_dataset = BabiQADataset(tokenizer, split="test", task_no=task_no)
+    test_dataset_raw = BabiQADataset(
+        tokenizer, split="test", return_object=True, task_no=task_no
     )
     df = pd.DataFrame(
         columns=["context", "question", "answer", "pred", "correct_or_not"]
@@ -36,6 +36,7 @@ for task_id in range(1):
                 do_sample=False,
                 eos_token_id=tokenizer.eos_token_id,
                 pad_token_id=tokenizer.eos_token_id,
+                skip_special_tokens=True,
             )[0]
         )
 
