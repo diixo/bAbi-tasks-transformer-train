@@ -8,13 +8,13 @@ import torch
 
 def format_context_to_slots(context):
     slots = parse_to_slots(context)
-    input_str = f"### Context:\n{context}\n"
+    input_str = f"### Context:\n{context}\n\n"
     output_str = f"### Slots:\n{slots}\n"
     return input_str, output_str
 
 def format_question_to_answer(context, question, answer):
     slots = parse_to_slots(context)
-    input_str = f"### Context:\n{question}\n### Slots:\n{slots}\n"
+    input_str = f"### Context:\n{question}\n\n### Slots:\n{slots}\n\n"
     output_str = f"### System:\n{answer}\n"
     return input_str, output_str
 
