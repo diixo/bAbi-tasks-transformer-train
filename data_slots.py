@@ -69,9 +69,6 @@ class BabiQADatasetSlots():
         enc_input = self.tokenizer(input_text, truncation=True, add_special_tokens=False, return_tensors="pt")["input_ids"]
         enc_output = self.tokenizer(output_text, truncation=True, add_special_tokens=False, return_tensors="pt")["input_ids"]
 
-        #input_ids = enc_input + enc_output + [self.tokenizer.eos_token_id]
-        print(enc_input.shape, enc_output.shape)
-
         # combine into one sequence
         input_ids = torch.cat([
             enc_input,                                                      # (1, N)
