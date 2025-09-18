@@ -51,7 +51,7 @@ def make_items_list(dataset) -> list:
 
 class BabiQADatasetSlots():
 
-    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, retrun_object=False) -> None:
+    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
         self.data = list()
 
         dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
@@ -59,7 +59,7 @@ class BabiQADatasetSlots():
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
-        self.retrun_object = retrun_object
+        self.return_object = return_object
 
 
     def __getitem__(self, index):
