@@ -1,6 +1,6 @@
 import evaluate
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from data import BabiqaDatasetEval
+from data_eval import BabiqaDatasetEval
 from utils import parse_answer
 import torch
 import pandas as pd
