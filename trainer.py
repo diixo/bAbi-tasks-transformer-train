@@ -100,5 +100,5 @@ if __name__ == "__main__":
     )
 
     trainer.train()
-    trainer.save_model("my-model")
-    tokenizer.save_pretrained("my-model")
+    trainer.save_model("gpt2-babi")
+    tokenizer.save_pretrained("gpt2-babi")

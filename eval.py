@@ -8,7 +8,7 @@ import os
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_dir = "my-model"
+model_dir = "gpt2-babi"
 
 tokenizer = AutoTokenizer.from_pretrained(model_dir)
 model = AutoModelForCausalLM.from_pretrained(model_dir)
