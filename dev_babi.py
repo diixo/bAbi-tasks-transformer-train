@@ -1,5 +1,5 @@
 
-from data_slots import make_slots_set
+from data_slots import parse_to_slots
 
 
 actions = [
@@ -9,28 +9,14 @@ actions = [
     "Sandra moved to the garden.",
 ]
 
-slots = {}
-
 #################################################
 
-training_examples = []
 context = ""
 
-for action in actions:
-
-    context += f"###context: {action}\n"
-
-    slots = make_slots_set(action, slots.copy())
-
-    example_text = (
-        context +
-        "###slots " + str(slots) + "\n" +
-        "###system " + "OK.\n"   # Stub of answer
-    )
-    #print(example_text)
-    training_examples.append(example_text)
-
+slots = parse_to_slots(" ".join(actions))
 print(slots)
+
+training_examples = [slots]
 
 #################################################
 from transformers import GPT2Tokenizer
