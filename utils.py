@@ -59,11 +59,12 @@ def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
     for line in story.strip().split("\n"):
         # убираем номер в начале
         line = line.strip()
-        # if re.match(r"^\d+", line):
-        #     line = " ".join(line.split()[1:])
+        print(line)
+        if re.match(r"^\d+", line):
+            line = " ".join(line.split()[1:])
 
         # перемещение персонажа
-        m = re.match(r"(\w+) (moved|journeyed|went).* to the (\w+)", line)
+        m = re.match(r"(\w+) (moved|journeyed|went|travelled).* to the (\w+)", line)
         if m:
             name, _, place = m.groups()
             slots[name] = {"location": place}
@@ -95,17 +96,25 @@ def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
             if holder in slots and "location" in slots[holder]:
                 slots[obj] = {"location": slots[holder]["location"]}
 
+    print(slots)
     return dict_to_str(slots)
 
 
 def test():
 
-    story = """Mary moved to the bathroom.
-    Sandra journeyed to the bedroom.
-    Mary got the football there.
-    John went to the kitchen.
-    Mary went back to the kitchen.
-    Mary went back to the garden."""
+    story = """Mary went back to the kitchen.
+Mary moved to the bathroom.
+Mary went back to the bedroom.
+Daniel went to the garden.
+Daniel went to the bathroom.
+John moved to the bedroom.
+John went back to the office.
+John moved to the bathroom.
+Daniel went back to the garden.
+Daniel took the milk there.
+John went back to the hallway.
+Daniel travelled to the hallway.
+"""
 
     slots = parse_sequence_slots(story)
     print(slots)
