@@ -12,7 +12,7 @@ INPUT_TEMPLATE = """
 ### Question:
 {question}
 
-### Answer:
+### System:
 {answer}
 """
 
