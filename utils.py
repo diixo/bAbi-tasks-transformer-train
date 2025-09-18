@@ -51,8 +51,7 @@ def parse_to_slots(context: str) -> str:
     return dict_to_str(slot_list)
 
 
-
-def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
+def parse_sequence_slots(story: str, objects=("football", "milk", "apple"), normalization = False):
     slots = {}
     holders = {}  # какой предмет у кого
     
@@ -69,9 +68,11 @@ def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
             name, _, place = m.groups()
             slots[name] = {"location": place}
             # обновляем предметы, которые у этого персонажа
-            for obj, holder in holders.items():
-                if holder == name:
-                    slots[obj] = {"location": place}
+            # TODO: ??? не меняем локацию предметов владельца, чтобы модель сама догадалась по аттрибуту with?
+            if normalization:
+                for obj, holder in holders.items():
+                    if holder == name:
+                        slots[obj] = {"location": place}
 
         # персонаж взял объект
         for obj in objects:
@@ -82,7 +83,7 @@ def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
 
         # персонаж положил объект
         for obj in objects:
-            if re.search(fr"(\w+) (dropped|left) the {obj}", line):
+            if re.search(fr"(\w+) (dropped|left|discarded|put down) the {obj}", line):
                 name = line.split()[0]
                 if holders.get(obj) == name:
                     del holders[obj]
@@ -90,11 +91,12 @@ def parse_sequence_slots(story: str, objects=("football", "milk", "apple")):
                     slots[obj] = {"location": slots[name]["location"]}
 
     # финальная нормализация: все "with" → "location"
-    for obj, state in slots.items():
-        if "with" in state:
-            holder = state["with"]
-            if holder in slots and "location" in slots[holder]:
-                slots[obj] = {"location": slots[holder]["location"]}
+    if normalization:
+        for obj, state in slots.items():
+            if "with" in state:
+                holder = state["with"]
+                if holder in slots and "location" in slots[holder]:
+                    slots[obj] = {"location": slots[holder]["location"]}
 
     print(slots)
     return dict_to_str(slots)
