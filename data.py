@@ -48,7 +48,7 @@ def get_next_qa(dataset):
 
 class BabiQADataset():
 
-    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, retrun_object=False) -> None:
+    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
         self.data = list()
         if task_no == "ext":
             if split in {"train", "test",}:
@@ -59,7 +59,7 @@ class BabiQADataset():
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
-        self.retrun_object = retrun_object
+        self.return_object = return_object
 
 
     def __getitem__(self, index):
@@ -70,7 +70,7 @@ class BabiQADataset():
             "answer": answer
         }
         
-        if self.retrun_object:
+        if self.return_object:
             return cqa
 
         if self.no_answer:
