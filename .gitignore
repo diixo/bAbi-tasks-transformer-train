@@ -5,4 +5,7 @@
 wandb/
 __py*
 my_model/*
-eval_result/
+my-model/*
+eval_results/
+eval-results/
+gpt2-babi/

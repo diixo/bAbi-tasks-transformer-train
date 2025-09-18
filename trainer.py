@@ -1,5 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer as DefaultTrainer
-from data import collate_data, BabiQADataset
+from data_slots import BabiqaDatasetSlots, collate_data
 from torch.utils.data import ConcatDataset
 import torch
 from transformers.optimization import get_scheduler
@@ -7,13 +7,16 @@ import sys
 import argparse
 
 
+torch.manual_seed(42)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def create_test_args() -> list:
     return [
         "trainer.py",
         "gpt2",
-        "-dataset", "ext",
-        "-lr", "2e-4",
-        "-epoch", "5",
+        #"-dataset", "ext", # switch ext->babi
+        "-lr", "3e-4",
+        "-epoch", "3",
         "-batch_size", "8",
     ]
 
@@ -42,48 +45,46 @@ class Trainer(DefaultTrainer):
         return self.lr_scheduler
 
 
-def make_dataset(tasks_amount=20, dataset="default"):
-    if dataset == "ext":
-        train_ds = ConcatDataset([ BabiQADataset(tokenizer, split="train", task_no="ext") ])
-        test_ds  = ConcatDataset([ BabiQADataset(tokenizer, split="test", task_no="ext") ])
-    else:
-        train_ds = ConcatDataset(
-            [
-                BabiQADataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
-                for task_id in range(tasks_amount)
-            ]
-        )
-        test_ds = ConcatDataset(
-            [
-                BabiQADataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
-                for task_id in range(tasks_amount)
-            ]
-        )
+def make_dataset(tasks_amount=0, dataset="default"):
+    if tasks_amount == 0:
+        tasks_amount = 20
+    train_ds = ConcatDataset(
+        [
+            BabiqaDatasetSlots(tokenizer, split="train", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
+    test_ds = ConcatDataset(
+        [
+            BabiqaDatasetSlots(tokenizer, split="test", task_no=f"qa{task_id+1}")
+            for task_id in range(tasks_amount)
+        ]
+    )
     return train_ds, test_ds
 
 
 if __name__ == "__main__":
-
     sys.argv = create_test_args()
-
     args = parser.parse_args()
 
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)
     model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
+    model.to(device)
 
     train_dataset, test_dataset = make_dataset(1, args.dataset)
 
     training_args = TrainingArguments(
         output_dir="my_model",
-        save_strategy="epoch",
+        save_strategy="no",
         eval_strategy="epoch",
         learning_rate=args.lr,
         num_train_epochs=args.epoch,
         weight_decay=0.0,
         push_to_hub=False,
-        load_best_model_at_end=True,
+        load_best_model_at_end=False,
         per_device_train_batch_size=args.batch_size,
-        gradient_accumulation_steps=args.gradient_accumulation
+        gradient_accumulation_steps=args.gradient_accumulation,
+        lr_scheduler_type="constant",
     )
 
     trainer = Trainer(
@@ -99,5 +100,5 @@ if __name__ == "__main__":
     )
 
     trainer.train()
-    trainer.save_model("my_model/best")
-    tokenizer.save_pretrained("my_model/best")
+    trainer.save_model("gpt2-babi")
+    tokenizer.save_pretrained("gpt2-babi")
