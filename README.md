@@ -2,9 +2,9 @@
 Fine tune and evaluate transformer model on facebook's bAbi tasks.
 > [Towards AI-Complete Question Answering: A Set of Prerequisite Toy Tasks](https://arxiv.org/abs/1502.05698)
 
-* Train: [trainer.py](trainer.py)
+* **Training**: [trainer.py](trainer.py)
 
-* Evaluation: [eval.py](eval.py)
+* **Evaluation**: [eval.py](eval.py)
 
 
 ## Tasks
