@@ -13,3 +13,35 @@ def parse_answer(text: str,eos_token):
     except:
         answer = ""
     return answer
+
+
+def str_tokenize_words(s: str):
+    import re
+    s = re.findall("(\.?\w[\w'\.&-]*\w|\w\+*#?)", s)
+    if s: return s
+    return []
+
+
+persons = { "Sandra", "Daniel", "John", "Mary", }
+locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
+
+
+def parse_to_slots(context: str) -> str:
+    """
+    Output string format:
+    Person1=location:location-1; Person2=location:location-2; Person3=location:location-3;
+    """
+    words = str_tokenize_words(context)
+    person = None
+    slot_list = {}
+    for w in words:
+        if w in persons:
+            person = w
+        if w in locations and person is not None:
+            slot_list[person] = { "location": w }
+
+    slot_str = " ".join(
+        f"{name}=" + " ".join(f"{k}:{v};" for k, v in attrs.items())
+        for name, attrs in slot_list.items()
+    )
+    return slot_str

@@ -1,5 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer as DefaultTrainer
 from data import collate_data, BabiQADataset
+from data_slots import BabiQADatasetSlots
 from torch.utils.data import ConcatDataset
 import torch
 from transformers.optimization import get_scheduler
@@ -47,13 +48,13 @@ def make_dataset(tasks_amount=0, dataset="default"):
         tasks_amount = 20
     train_ds = ConcatDataset(
         [
-            BabiQADataset(tokenizer, split="train", task_no=f"qa{task_id+1}")
+            BabiQADatasetSlots(tokenizer, split="train", task_no=f"qa{task_id+1}")
             for task_id in range(tasks_amount)
         ]
     )
     test_ds = ConcatDataset(
         [
-            BabiQADataset(tokenizer, split="test", task_no=f"qa{task_id+1}")
+            BabiQADatasetSlots(tokenizer, split="test", task_no=f"qa{task_id+1}")
             for task_id in range(tasks_amount)
         ]
     )
@@ -61,9 +62,7 @@ def make_dataset(tasks_amount=0, dataset="default"):
 
 
 if __name__ == "__main__":
-
     sys.argv = create_test_args()
-
     args = parser.parse_args()
 
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_id)

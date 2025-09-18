@@ -2,31 +2,9 @@ from datasets import load_dataset
 from transformers import PreTrainedTokenizer
 from torch.nn.utils.rnn import pad_sequence
 from collections import defaultdict
+from utils import parse_to_slots
 import json
 
-
-def str_tokenize_words(s: str):
-    import re
-    s = re.findall("(\.?\w[\w'\.&-]*\w|\w\+*#?)", s)
-    if s: return s
-    return []
-
-persons = { "Sandra", "Daniel", "John", "Mary", }
-
-locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
-
-def make_slots_set(event, slot_list):
-    words = str_tokenize_words(event)
-    person = ""
-    for w in words:
-        if w in persons:
-            person = w
-
-        if w in locations:
-            slot_list[person] = { "location": w }
-    return slot_list
-
-#####################################################################
 
 INPUT_TEMPLATE = """
 ### Context:
@@ -40,7 +18,11 @@ INPUT_TEMPLATE = """
 """
 
 
-def get_next_qa(dataset):
+def make_items_list(dataset) -> list:
+    """
+    return list(tuple(context, question, answer))
+    """
+    items = list()
     for x in dataset:
         story = x.get('story', None)
         if story:
@@ -53,9 +35,14 @@ def get_next_qa(dataset):
                     question = sent
                     answer = story["answer"][s_idx]
                     context = context.strip()
-                    yield context, question, answer
+                    items.append((context, question, answer))
+
+                    slots = parse_to_slots(context)
+                    # 1. context -> slots
+                    # 2. slots + question -> answer
                 else:
                     context += f" {sent}"
+    return items
 
 
 class BabiQADatasetSlots():
@@ -64,7 +51,7 @@ class BabiQADatasetSlots():
         self.data = list()
 
         dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
-        self.data = list(get_next_qa(dataset))
+        self.data = make_items_list(dataset)
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
