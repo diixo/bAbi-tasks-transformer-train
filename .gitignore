@@ -5,4 +5,5 @@
 wandb/
 __py*
 my_model/*
+my-model/*
 eval_result/

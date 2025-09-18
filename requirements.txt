@@ -2,4 +2,4 @@ pandas
 datasets
 transformers
 scikit-learn
-wandb
+evaluate
