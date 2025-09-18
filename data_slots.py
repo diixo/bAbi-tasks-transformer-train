@@ -49,7 +49,7 @@ def make_items_list(dataset) -> list:
     return items
 
 
-class BabiQADatasetSlots():
+class BabiqaDatasetSlots():
 
     def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
         self.data = list()
