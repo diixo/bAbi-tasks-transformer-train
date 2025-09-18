@@ -34,24 +34,11 @@ persons = { "Sandra", "Daniel", "John", "Mary", }
 locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
 
 
-def parse_to_slots(context: str) -> str:
+def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalization = False) -> str:
     """
     Output string format:
     Person1=location:location-1; Person2=location:location-2; Person3=location:location-3;
     """
-    words = str_tokenize_words(context)
-    person = None
-    slot_list = {}
-    for w in words:
-        if w in persons:
-            person = w
-        if w in locations and person is not None:
-            slot_list[person] = { "location": w }
-
-    return dict_to_str(slot_list)
-
-
-def parse_sequence_slots(story: str, objects=("football", "milk", "apple"), normalization = False):
     slots = {}
     holders = {}  # какой предмет у кого
     
@@ -118,7 +105,7 @@ John went back to the hallway.
 Daniel travelled to the hallway.
 """
 
-    slots = parse_sequence_slots(story)
+    slots = parse_to_slots(story)
     print(slots)
 
 test()
