@@ -53,12 +53,11 @@ def make_items_list(dataset) -> list:
 class BabiqaDatasetSlots():
 
     def __init__(self, tokenizer, task_no="qa1", split="train") -> None:
+        self.tokenizer: PreTrainedTokenizer = tokenizer
         self.data = list()
 
         dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
         self.data = make_items_list(dataset)
-
-        self.tokenizer: PreTrainedTokenizer = tokenizer
 
 
     def __getitem__(self, index):
@@ -80,6 +79,9 @@ class BabiqaDatasetSlots():
 
         # masked only input_text:   [0, :N=enc_input(1, N)]
         labels[0, :enc_input.size(1)] = -100
+
+        batch_max_length = max(len(item)+1 for item in input_ids)
+        assert batch_max_length <= 1024, f"batch_max_length={batch_max_length}<=1024: out of range"
 
         return {
             "input_ids": input_ids,
