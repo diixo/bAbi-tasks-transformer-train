@@ -12,6 +12,7 @@ def format_context_to_slots(context):
     output_str = f"### Slots:\n{slots}\n"
     return input_str, output_str
 
+
 def format_question_to_answer(context, question, answer):
     slots = parse_to_slots(context)
     input_str = f"### Context:\n{question}\n\n### Slots:\n{slots}\n\n"
@@ -51,15 +52,13 @@ def make_items_list(dataset) -> list:
 
 class BabiqaDatasetSlots():
 
-    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
+    def __init__(self, tokenizer, task_no="qa1", split="train") -> None:
         self.data = list()
 
         dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
         self.data = make_items_list(dataset)
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
-        self.no_answer = no_answer
-        self.return_object = return_object
 
 
     def __getitem__(self, index):
