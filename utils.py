@@ -40,12 +40,12 @@ def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
     Person1=location:location-1; Person2=location:location-2; Person3=location:location-3;
     """
     slots = {}
-    holders = {}  # какой предмет у кого
-    
-    for line in story.strip().split("\n"):
-        # убираем номер в начале
+    holders = {}
+
+    for line in story.strip().split("."):
         line = line.strip()
-        print(line)
+
+        # убираем номер в начале
         if re.match(r"^\d+", line):
             line = " ".join(line.split()[1:])
 
@@ -75,7 +75,7 @@ def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
                 if holders.get(obj) == name:
                     del holders[obj]
                     # объект остаётся в текущей локации персонажа
-                    slots[obj] = {"location": slots[name]["location"]}
+                    #slots[obj] = {"location": slots[name]["location"]}
 
     # финальная нормализация: все "with" → "location"
     if normalization:
@@ -85,27 +85,17 @@ def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
                 if holder in slots and "location" in slots[holder]:
                     slots[obj] = {"location": slots[holder]["location"]}
 
-    print(slots)
+    #print(slots)
     return dict_to_str(slots)
 
 
 def test():
 
-    story = """Mary went back to the kitchen.
-Mary moved to the bathroom.
-Mary went back to the bedroom.
-Daniel went to the garden.
-Daniel went to the bathroom.
-John moved to the bedroom.
-John went back to the office.
-John moved to the bathroom.
-Daniel went back to the garden.
-Daniel took the milk there.
-John went back to the hallway.
-Daniel travelled to the hallway.
-"""
+    story = """Daniel went to the bedroom. Daniel picked up the apple there. Mary grabbed the milk there. Mary left the milk. John journeyed to the office. Daniel put down the apple there."""
 
     slots = parse_to_slots(story)
     print(slots)
 
-test()
+
+if __name__ == "__main__":
+    test()
