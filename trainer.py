@@ -9,6 +9,7 @@ import argparse
 
 torch.manual_seed(42)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model_dir = "gpt2-babi"
 
 def create_test_args() -> list:
     return [
@@ -45,21 +46,24 @@ class Trainer(DefaultTrainer):
         return self.lr_scheduler
 
 
-def make_dataset(tasks_amount=0, dataset="default"):
+def make_dataset(tasks_amount=0):
     if tasks_amount == 0:
         tasks_amount = 20
-    train_ds = ConcatDataset(
-        [
-            BabiqaDatasetSlots(tokenizer, split="train", task_no=f"qa{task_id+1}")
-            for task_id in range(tasks_amount)
-        ]
-    )
-    test_ds = ConcatDataset(
-        [
-            BabiqaDatasetSlots(tokenizer, split="test", task_no=f"qa{task_id+1}")
-            for task_id in range(tasks_amount)
-        ]
-    )
+        train_ds = ConcatDataset(
+            [
+                BabiqaDatasetSlots(tokenizer, split="train", task_no=f"qa{task_id+1}")
+                for task_id in range(tasks_amount)
+            ]
+        )
+        test_ds = ConcatDataset(
+            [
+                BabiqaDatasetSlots(tokenizer, split="test", task_no=f"qa{task_id+1}")
+                for task_id in range(tasks_amount)
+            ]
+        )
+    else:
+        train_ds = ConcatDataset([ BabiqaDatasetSlots(tokenizer, split="train", task_no=f"qa{tasks_amount}") ])
+        test_ds = ConcatDataset([ BabiqaDatasetSlots(tokenizer, split="test", task_no=f"qa{tasks_amount}") ])
     return train_ds, test_ds
 
 
@@ -71,12 +75,12 @@ if __name__ == "__main__":
     model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
     model.to(device)
 
-    train_dataset, test_dataset = make_dataset(1, args.dataset)
+    train_dataset, test_dataset = make_dataset(2)
 
     training_args = TrainingArguments(
-        output_dir="my_model",
+        output_dir=model_dir,
         save_strategy="no",
-        eval_strategy="epoch",
+        eval_strategy="no",
         learning_rate=args.lr,
         num_train_epochs=args.epoch,
         weight_decay=0.0,
@@ -100,5 +104,5 @@ if __name__ == "__main__":
     )
 
     trainer.train()
-    trainer.save_model("gpt2-babi")
-    tokenizer.save_pretrained("gpt2-babi")
+    trainer.save_model(model_dir)
+    tokenizer.save_pretrained(model_dir)
