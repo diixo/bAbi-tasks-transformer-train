@@ -44,7 +44,8 @@ _HOMEPAGE = "https://research.fb.com/downloads/babi/"
 
 _LICENSE = """Creative Commons Attribution 3.0 License"""
 
-ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
+#ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
+ZIP_URL = "datasets/babi-qa/tasks_1-20_v1-2.tar.gz"
 paths = {
     "en": {
         "qa9": {
@@ -849,7 +850,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         my_urls = ZIP_URL
-        archive = dl_manager.download(my_urls)
+        archive = ZIP_URL#dl_manager.download(my_urls)
         splits = [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
