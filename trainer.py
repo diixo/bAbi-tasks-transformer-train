@@ -32,7 +32,7 @@ parser.add_argument('-ga', '--gradient_accumulation', default=1, type=int)
 
 
 class Trainer(DefaultTrainer):
-    def create_scheduler(self, optimizer: torch.optim.Optimizer = None):
+    def create_scheduler(self,  num_training_steps: int, optimizer: torch.optim.Optimizer = None):
         """
         disable scheduler
         """
