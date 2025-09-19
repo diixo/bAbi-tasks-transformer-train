@@ -9,14 +9,14 @@ import torch
 def format_context_to_slots(context):
     slots = parse_to_slots(context)
     input_str = f"### Context:\n{context}\n\n"
-    output_str = f"### Slots:\n{slots}\n"
+    output_str = f"### Slots:\n{slots}"
     return input_str, output_str
 
 
 def format_question_to_answer(context, question, answer):
     slots = parse_to_slots(context)
     input_str = f"### Context:\n{question}\n\n### Slots:\n{slots}\n\n"
-    output_str = f"### System:\n{answer}\n"
+    output_str = f"### System:\n{answer}"
     return input_str, output_str
 
 
@@ -52,11 +52,12 @@ def make_items_list(dataset) -> list:
 
 class BabiqaDatasetSlots():
 
-    def __init__(self, tokenizer, task_no="qa1", split="train") -> None:
+    def __init__(self, tokenizer, task_no="qa1", split="train", ext=False) -> None:
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.data = list()
 
-        dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
+        type_sz = "en-10k" if ext else "en"
+        dataset = load_dataset("babi_qa", type=type_sz, task_no=task_no, trust_remote_code=True)[split]
         self.data = make_items_list(dataset)
 
 
@@ -72,7 +73,7 @@ class BabiqaDatasetSlots():
             enc_input,                                                      # (1, N)
             enc_output,                                                     # (1, M)
             torch.tensor([[self.tokenizer.eos_token_id]], dtype=torch.long) # (1, 1)
-        ], dim=1)                                                           # (1, N + M + 1)
+        ], dim=1)                                                           # (1, N+M+1)=shape([0],[1])
 
         # create new array
         labels = input_ids.clone()
