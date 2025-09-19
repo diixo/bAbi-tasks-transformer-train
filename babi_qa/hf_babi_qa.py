@@ -45,7 +45,8 @@ _HOMEPAGE = "https://research.fb.com/downloads/babi/"
 _LICENSE = """Creative Commons Attribution 3.0 License"""
 
 #ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
-ZIP_URL = "datasets/babi-qa/tasks_1-20_v1-2.tar.gz"
+#ZIP_URL = "datasets/babi-qa/tasks_1-20_v1-2.tar.gz"
+ZIP_URL = "babi_qa/tasks_1-20_v1-2.tar.gz"
 paths = {
     "en": {
         "qa9": {
@@ -416,170 +417,6 @@ paths = {
             "test": "tasks_1-20_v1-2/en-valid-10k/qa18_test.txt",
         },
     },
-    "hn": {
-        "qa9": {
-            "test": "tasks_1-20_v1-2/hn/qa9_simple-negation_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa9_simple-negation_train.txt",
-        },
-        "qa4": {
-            "train": "tasks_1-20_v1-2/hn/qa4_two-arg-relations_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa4_two-arg-relations_test.txt",
-        },
-        "qa6": {
-            "train": "tasks_1-20_v1-2/hn/qa6_yes-no-questions_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa6_yes-no-questions_test.txt",
-        },
-        "qa11": {
-            "test": "tasks_1-20_v1-2/hn/qa11_basic-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa11_basic-coreference_train.txt",
-        },
-        "qa3": {
-            "test": "tasks_1-20_v1-2/hn/qa3_three-supporting-facts_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa3_three-supporting-facts_train.txt",
-        },
-        "qa15": {
-            "test": "tasks_1-20_v1-2/hn/qa15_basic-deduction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa15_basic-deduction_train.txt",
-        },
-        "qa17": {
-            "test": "tasks_1-20_v1-2/hn/qa17_positional-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa17_positional-reasoning_train.txt",
-        },
-        "qa13": {
-            "test": "tasks_1-20_v1-2/hn/qa13_compound-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa13_compound-coreference_train.txt",
-        },
-        "qa1": {
-            "train": "tasks_1-20_v1-2/hn/qa1_single-supporting-fact_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa1_single-supporting-fact_test.txt",
-        },
-        "qa14": {
-            "train": "tasks_1-20_v1-2/hn/qa14_time-reasoning_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa14_time-reasoning_test.txt",
-        },
-        "qa16": {
-            "test": "tasks_1-20_v1-2/hn/qa16_basic-induction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa16_basic-induction_train.txt",
-        },
-        "qa19": {
-            "test": "tasks_1-20_v1-2/hn/qa19_path-finding_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa19_path-finding_train.txt",
-        },
-        "qa18": {
-            "test": "tasks_1-20_v1-2/hn/qa18_size-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa18_size-reasoning_train.txt",
-        },
-        "qa10": {
-            "train": "tasks_1-20_v1-2/hn/qa10_indefinite-knowledge_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa10_indefinite-knowledge_test.txt",
-        },
-        "qa7": {
-            "train": "tasks_1-20_v1-2/hn/qa7_counting_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa7_counting_test.txt",
-        },
-        "qa5": {
-            "test": "tasks_1-20_v1-2/hn/qa5_three-arg-relations_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa5_three-arg-relations_train.txt",
-        },
-        "qa12": {
-            "test": "tasks_1-20_v1-2/hn/qa12_conjunction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa12_conjunction_train.txt",
-        },
-        "qa2": {
-            "train": "tasks_1-20_v1-2/hn/qa2_two-supporting-facts_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa2_two-supporting-facts_test.txt",
-        },
-        "qa20": {
-            "train": "tasks_1-20_v1-2/hn/qa20_agents-motivations_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa20_agents-motivations_test.txt",
-        },
-        "qa8": {
-            "train": "tasks_1-20_v1-2/hn/qa8_lists-sets_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa8_lists-sets_test.txt",
-        },
-    },
-    "hn-10k": {
-        "qa9": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa9_simple-negation_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa9_simple-negation_train.txt",
-        },
-        "qa4": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa4_two-arg-relations_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa4_two-arg-relations_test.txt",
-        },
-        "qa6": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa6_yes-no-questions_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa6_yes-no-questions_test.txt",
-        },
-        "qa11": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa11_basic-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa11_basic-coreference_train.txt",
-        },
-        "qa3": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa3_three-supporting-facts_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa3_three-supporting-facts_train.txt",
-        },
-        "qa15": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa15_basic-deduction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa15_basic-deduction_train.txt",
-        },
-        "qa17": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa17_positional-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa17_positional-reasoning_train.txt",
-        },
-        "qa13": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa13_compound-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa13_compound-coreference_train.txt",
-        },
-        "qa1": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa1_single-supporting-fact_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa1_single-supporting-fact_test.txt",
-        },
-        "qa14": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa14_time-reasoning_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa14_time-reasoning_test.txt",
-        },
-        "qa16": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa16_basic-induction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa16_basic-induction_train.txt",
-        },
-        "qa19": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa19_path-finding_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa19_path-finding_train.txt",
-        },
-        "qa18": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa18_size-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa18_size-reasoning_train.txt",
-        },
-        "qa10": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa10_indefinite-knowledge_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa10_indefinite-knowledge_test.txt",
-        },
-        "qa7": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa7_counting_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa7_counting_test.txt",
-        },
-        "qa5": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa5_three-arg-relations_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa5_three-arg-relations_train.txt",
-        },
-        "qa12": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa12_conjunction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa12_conjunction_train.txt",
-        },
-        "qa2": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa2_two-supporting-facts_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa2_two-supporting-facts_test.txt",
-        },
-        "qa20": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa20_agents-motivations_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa20_agents-motivations_test.txt",
-        },
-        "qa8": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa8_lists-sets_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa8_lists-sets_test.txt",
-        },
-    },
     "shuffled": {
         "qa9": {
             "test": "tasks_1-20_v1-2/shuffled/qa9_simple-negation_test.txt",
@@ -773,12 +610,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
             description="This part of the config handles the `qa1` task of the bAbI `en` dataset",
         ),
         BabiQaConfig(
-            type="hn",
-            task_no="qa1",
-            version=VERSION,
-            description="This part of the config handles the `qa1` task of the bAbI `hn` dataset",
-        ),
-        BabiQaConfig(
             type="en-10k",
             task_no="qa1",
             version=VERSION,
@@ -795,12 +626,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
             task_no="qa1",
             version=VERSION,
             description="This part of the config handles the `qa1` task of the bAbI `en-valid-10k` dataset",
-        ),
-        BabiQaConfig(
-            type="hn-10k",
-            task_no="qa1",
-            version=VERSION,
-            description="This part of the config handles the `qa1` task of the bAbI `hn-10k` dataset",
         ),
         BabiQaConfig(
             type="shuffled",
@@ -883,6 +708,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
         return splits
 
     def _generate_examples(self, filepath, files):
+        print("::_generate_examples", f"filepath: {filepath}, files:", files)
 
         for path, f in files:
             if path == filepath:
