@@ -649,7 +649,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                         "id": datasets.Value("string"),
                         "type": datasets.ClassLabel(names=["context", "question"]),
                         "text": datasets.Value("string"),
-                        "supporting_ids": datasets.Sequence(datasets.Value("string")),
+                        "answer_ids": datasets.Sequence(datasets.Value("string")),
                         "answer": datasets.Value("string"),
                     }
                 ),
@@ -708,8 +708,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
         return splits
 
     def _generate_examples(self, filepath, files):
-        print("::_generate_examples", f"filepath: {filepath}, files:", files)
-
         for path, f in files:
             if path == filepath:
                 story = []
@@ -733,7 +731,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 1,  # question
-                                    "supporting_ids": line_split[-1].split(" "),
+                                    "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
                                 }
@@ -743,7 +741,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 0,  # context
-                                    "supporting_ids": [],
+                                    "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
                                 }
@@ -756,7 +754,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 1,  # question
-                                    "supporting_ids": line_split[-1].split(" "),
+                                    "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
                                 }
@@ -766,7 +764,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 0,  # context
-                                    "supporting_ids": [],
+                                    "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
                                 }
