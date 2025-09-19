@@ -81,6 +81,9 @@ class BabiqaDatasetSlots():
         # masked only input_text:   [0, :N=enc_input(1, N)]
         labels[0, :enc_input.size(1)] = -100
 
+        batch_max_length = max(len(item)+1 for item in input_ids)
+        assert batch_max_length <= 1024, f"batch_max_length={batch_max_length}<=1024 : out of range"
+
         return {
             "input_ids": input_ids,
             "labels": labels,
