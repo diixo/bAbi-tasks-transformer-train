@@ -20,9 +20,7 @@ if __name__ == "__main__":
     #task_no = f"qa{task_id+1}"
     task_no = "qa2"
     test_dataset = BabiqaDatasetEval(tokenizer, split="test", task_no=task_no)
-    test_dataset_raw = BabiqaDatasetEval(
-        tokenizer, split="test", return_object=True, task_no=task_no
-    )
+
     df = pd.DataFrame(
         columns=["context", "question", "answer", "pred", "correct_or_not"]
     )
@@ -32,7 +30,7 @@ if __name__ == "__main__":
     correct = 0
 
     for data_idx, data in enumerate(test_dataset):
-        raw_data = test_dataset_raw[data_idx]
+        raw_data = test_dataset.get_object(data_idx)
         input_ids = data["input_ids"].to(device)
         gen_ids = model.generate(
                 input_ids=input_ids,
