@@ -5,7 +5,7 @@ def remove_punctuation_wo_comma(text):
     return cleaned_text
 
 
-def parse_answer(text: str,eos_token):
+def parse_answer(text: str, eos_token):
     text = text.replace(eos_token,"")
     try:
         answer_start = text.index("System:")
@@ -34,7 +34,7 @@ persons = { "Sandra", "Daniel", "John", "Mary", }
 locations = { "office", "garden", "hallway", "bedroom", "bathroom", }
 
 
-def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalization = False) -> str:
+def story_to_slots(story: str, objects=("football", "milk", "apple"), normalization = False) -> str:
     """
     Output string format:
     Person1=location:location-1; Person2=location:location-2; Person3=location:location-3;
@@ -138,7 +138,7 @@ Sandra journeyed to the garden.
  Sandra moved to the office.
  John journeyed to the hallway."""
 
-    slots = parse_to_slots(story)
+    slots = story_to_slots(story)
     print(slots)
 
     for line in story.strip().split("."):

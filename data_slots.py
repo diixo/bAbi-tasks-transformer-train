@@ -2,19 +2,19 @@ from datasets import load_dataset
 from transformers import PreTrainedTokenizer
 from torch.nn.utils.rnn import pad_sequence
 from collections import defaultdict
-from utils import parse_to_slots
+from utils import story_to_slots
 import torch
 
 
 def format_context_to_slots(context):
-    slots = parse_to_slots(context)
+    slots = story_to_slots(context)
     input_str = f"### Context:\n{context}\n\n"
     output_str = f"### Slots:\n{slots}"
     return input_str, output_str
 
 
 def format_question_to_answer(context, question, answer):
-    slots = parse_to_slots(context)
+    slots = story_to_slots(context)
     input_str = f"### Context:\n{question}\n\n### Slots:\n{slots}\n\n"
     output_str = f"### System:\n{answer}"
     return input_str, output_str
