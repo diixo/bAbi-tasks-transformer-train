@@ -51,12 +51,12 @@ class BabiqaDatasetEval():
             "question": question,
             "answer": answer
         }
-        
-        if self.return_object:
-            return cqa
 
         if self.no_answer:
             cqa["answer"] = ""
+
+        if self.return_object:
+            return cqa
         
         input_text = INPUT_TEMPLATE.format_map(cqa).strip()
         encodings = self.tokenizer(input_text, truncation=True, max_length=384, return_tensors="pt")
