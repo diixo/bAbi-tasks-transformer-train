@@ -19,7 +19,7 @@ if __name__ == "__main__":
 #for task_id in range(1):
     #task_no = f"qa{task_id+1}"
     task_no = "qa2"
-    test_dataset = BabiqaDatasetEval(tokenizer, split="test", task_no=task_no)
+    test_dataset = BabiqaDatasetEval(tokenizer, split="test", task_no=task_no, no_answer=True)
 
     df = pd.DataFrame(
         columns=["context", "question", "answer", "pred", "correct_or_not"]
