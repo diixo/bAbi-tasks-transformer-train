@@ -76,7 +76,9 @@ def story_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
                     del holders[obj]
                     # TODO:
                     # объект остаётся в текущей локации персонажа
-                    #slots[obj] = {"location": slots[name]["location"]}
+                    if name in slots:
+                        if "location" in slots[name]:
+                            slots[obj] = {"location": slots[name]["location"]}
 
     # финальная нормализация: все "with" → "location"
     if normalization:

@@ -14,8 +14,11 @@ tokenizer = AutoTokenizer.from_pretrained(model_dir)
 model = AutoModelForCausalLM.from_pretrained(model_dir)
 model.to(device)
 
-for task_id in range(1):
-    task_no = f"qa{task_id+1}"
+
+if __name__ == "__main__":
+#for task_id in range(1):
+    #task_no = f"qa{task_id+1}"
+    task_no = "qa2"
     test_dataset = BabiqaDatasetEval(tokenizer, split="test", task_no=task_no)
     test_dataset_raw = BabiqaDatasetEval(
         tokenizer, split="test", return_object=True, task_no=task_no
