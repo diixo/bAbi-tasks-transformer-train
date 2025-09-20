@@ -14,8 +14,9 @@
 # limitations under the License.
 """The bAbI tasks dataset."""
 
-
+import os
 import datasets
+from collections import defaultdict
 
 
 _CITATION = """\
@@ -45,8 +46,9 @@ _HOMEPAGE = "https://research.fb.com/downloads/babi/"
 _LICENSE = """Creative Commons Attribution 3.0 License"""
 
 #ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
-#ZIP_URL = "datasets/babi-qa/tasks_1-20_v1-2.tar.gz"
-ZIP_URL = "babi_qa/tasks_1-20_v1-2.tar.gz"
+ZIP_FILENAME = "tasks_1-20_v1-2.tar.gz"
+ZIP_DIR = "babi_qa_slots"
+
 paths = {
     "en": {
         "qa9": {
@@ -674,8 +676,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        my_urls = ZIP_URL
-        archive = ZIP_URL#dl_manager.download(my_urls)
+        archive = ZIP_DIR + "/" + ZIP_FILENAME
         splits = [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
@@ -773,3 +774,36 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                     if story != []:
                         yield example_idx, {"story": story}
                 break
+
+    def get_data_files(self):
+        data_files = {
+            "train": paths[self.config.type][self.config.task_no]["train"],
+            "test": paths[self.config.type][self.config.task_no]["test"],
+        }
+        if "valid" in self.config.type:
+            data_files["valid"] = paths[self.config.type][self.config.task_no]["valid"],
+        return data_files
+
+
+    def raw_to_json(self):
+        dataset_json = {}
+
+        for split, filepath in self.get_data_files().items():
+            filepath = os.path.join(ZIP_DIR, filepath)
+            #print(filepath)
+            files = [(filepath, open(filepath, "rb"))]
+            stories = []
+
+            for _, dictionary in self._generate_examples(filepath=filepath, files=files):
+                raw_story = dictionary["story"]
+                # defaultdict: creates an empty list the first time the key is accessed
+                item = defaultdict(list)
+
+                for line in raw_story:
+                    for k, v in line.items(): item[k].append(v)
+
+                # Let's convert it back to a regular dict
+                story = dict(item)
+                stories.append(story)
+            dataset_json[split] = stories
+        return dataset_json
