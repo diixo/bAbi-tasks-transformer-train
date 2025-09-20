@@ -9,3 +9,6 @@ my-model/*
 eval_results/
 eval-results/
 gpt2-babi/
+test-*.json
+
+babi_qa_slots/tasks_1-20_v1-2/*

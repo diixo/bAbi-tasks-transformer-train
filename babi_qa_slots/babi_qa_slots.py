@@ -14,8 +14,10 @@
 # limitations under the License.
 """The bAbI tasks dataset."""
 
-
+import os
 import datasets
+from collections import defaultdict
+from utils import str_to_slots
 
 
 _CITATION = """\
@@ -44,7 +46,10 @@ _HOMEPAGE = "https://research.fb.com/downloads/babi/"
 
 _LICENSE = """Creative Commons Attribution 3.0 License"""
 
-ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
+#ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/tasks_1-20_v1-2.tar.gz"
+ZIP_FILENAME = "tasks_1-20_v1-2.tar.gz"
+ZIP_DIR = "babi_qa_slots"
+
 paths = {
     "en": {
         "qa9": {
@@ -415,170 +420,6 @@ paths = {
             "test": "tasks_1-20_v1-2/en-valid-10k/qa18_test.txt",
         },
     },
-    "hn": {
-        "qa9": {
-            "test": "tasks_1-20_v1-2/hn/qa9_simple-negation_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa9_simple-negation_train.txt",
-        },
-        "qa4": {
-            "train": "tasks_1-20_v1-2/hn/qa4_two-arg-relations_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa4_two-arg-relations_test.txt",
-        },
-        "qa6": {
-            "train": "tasks_1-20_v1-2/hn/qa6_yes-no-questions_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa6_yes-no-questions_test.txt",
-        },
-        "qa11": {
-            "test": "tasks_1-20_v1-2/hn/qa11_basic-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa11_basic-coreference_train.txt",
-        },
-        "qa3": {
-            "test": "tasks_1-20_v1-2/hn/qa3_three-supporting-facts_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa3_three-supporting-facts_train.txt",
-        },
-        "qa15": {
-            "test": "tasks_1-20_v1-2/hn/qa15_basic-deduction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa15_basic-deduction_train.txt",
-        },
-        "qa17": {
-            "test": "tasks_1-20_v1-2/hn/qa17_positional-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa17_positional-reasoning_train.txt",
-        },
-        "qa13": {
-            "test": "tasks_1-20_v1-2/hn/qa13_compound-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa13_compound-coreference_train.txt",
-        },
-        "qa1": {
-            "train": "tasks_1-20_v1-2/hn/qa1_single-supporting-fact_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa1_single-supporting-fact_test.txt",
-        },
-        "qa14": {
-            "train": "tasks_1-20_v1-2/hn/qa14_time-reasoning_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa14_time-reasoning_test.txt",
-        },
-        "qa16": {
-            "test": "tasks_1-20_v1-2/hn/qa16_basic-induction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa16_basic-induction_train.txt",
-        },
-        "qa19": {
-            "test": "tasks_1-20_v1-2/hn/qa19_path-finding_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa19_path-finding_train.txt",
-        },
-        "qa18": {
-            "test": "tasks_1-20_v1-2/hn/qa18_size-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa18_size-reasoning_train.txt",
-        },
-        "qa10": {
-            "train": "tasks_1-20_v1-2/hn/qa10_indefinite-knowledge_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa10_indefinite-knowledge_test.txt",
-        },
-        "qa7": {
-            "train": "tasks_1-20_v1-2/hn/qa7_counting_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa7_counting_test.txt",
-        },
-        "qa5": {
-            "test": "tasks_1-20_v1-2/hn/qa5_three-arg-relations_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa5_three-arg-relations_train.txt",
-        },
-        "qa12": {
-            "test": "tasks_1-20_v1-2/hn/qa12_conjunction_test.txt",
-            "train": "tasks_1-20_v1-2/hn/qa12_conjunction_train.txt",
-        },
-        "qa2": {
-            "train": "tasks_1-20_v1-2/hn/qa2_two-supporting-facts_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa2_two-supporting-facts_test.txt",
-        },
-        "qa20": {
-            "train": "tasks_1-20_v1-2/hn/qa20_agents-motivations_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa20_agents-motivations_test.txt",
-        },
-        "qa8": {
-            "train": "tasks_1-20_v1-2/hn/qa8_lists-sets_train.txt",
-            "test": "tasks_1-20_v1-2/hn/qa8_lists-sets_test.txt",
-        },
-    },
-    "hn-10k": {
-        "qa9": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa9_simple-negation_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa9_simple-negation_train.txt",
-        },
-        "qa4": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa4_two-arg-relations_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa4_two-arg-relations_test.txt",
-        },
-        "qa6": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa6_yes-no-questions_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa6_yes-no-questions_test.txt",
-        },
-        "qa11": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa11_basic-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa11_basic-coreference_train.txt",
-        },
-        "qa3": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa3_three-supporting-facts_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa3_three-supporting-facts_train.txt",
-        },
-        "qa15": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa15_basic-deduction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa15_basic-deduction_train.txt",
-        },
-        "qa17": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa17_positional-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa17_positional-reasoning_train.txt",
-        },
-        "qa13": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa13_compound-coreference_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa13_compound-coreference_train.txt",
-        },
-        "qa1": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa1_single-supporting-fact_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa1_single-supporting-fact_test.txt",
-        },
-        "qa14": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa14_time-reasoning_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa14_time-reasoning_test.txt",
-        },
-        "qa16": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa16_basic-induction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa16_basic-induction_train.txt",
-        },
-        "qa19": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa19_path-finding_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa19_path-finding_train.txt",
-        },
-        "qa18": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa18_size-reasoning_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa18_size-reasoning_train.txt",
-        },
-        "qa10": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa10_indefinite-knowledge_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa10_indefinite-knowledge_test.txt",
-        },
-        "qa7": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa7_counting_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa7_counting_test.txt",
-        },
-        "qa5": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa5_three-arg-relations_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa5_three-arg-relations_train.txt",
-        },
-        "qa12": {
-            "test": "tasks_1-20_v1-2/hn-10k/qa12_conjunction_test.txt",
-            "train": "tasks_1-20_v1-2/hn-10k/qa12_conjunction_train.txt",
-        },
-        "qa2": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa2_two-supporting-facts_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa2_two-supporting-facts_test.txt",
-        },
-        "qa20": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa20_agents-motivations_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa20_agents-motivations_test.txt",
-        },
-        "qa8": {
-            "train": "tasks_1-20_v1-2/hn-10k/qa8_lists-sets_train.txt",
-            "test": "tasks_1-20_v1-2/hn-10k/qa8_lists-sets_test.txt",
-        },
-    },
     "shuffled": {
         "qa9": {
             "test": "tasks_1-20_v1-2/shuffled/qa9_simple-negation_test.txt",
@@ -772,12 +613,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
             description="This part of the config handles the `qa1` task of the bAbI `en` dataset",
         ),
         BabiQaConfig(
-            type="hn",
-            task_no="qa1",
-            version=VERSION,
-            description="This part of the config handles the `qa1` task of the bAbI `hn` dataset",
-        ),
-        BabiQaConfig(
             type="en-10k",
             task_no="qa1",
             version=VERSION,
@@ -794,12 +629,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
             task_no="qa1",
             version=VERSION,
             description="This part of the config handles the `qa1` task of the bAbI `en-valid-10k` dataset",
-        ),
-        BabiQaConfig(
-            type="hn-10k",
-            task_no="qa1",
-            version=VERSION,
-            description="This part of the config handles the `qa1` task of the bAbI `hn-10k` dataset",
         ),
         BabiQaConfig(
             type="shuffled",
@@ -823,7 +652,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                         "id": datasets.Value("string"),
                         "type": datasets.ClassLabel(names=["context", "question"]),
                         "text": datasets.Value("string"),
-                        "supporting_ids": datasets.Sequence(datasets.Value("string")),
+                        "answer_ids": datasets.Sequence(datasets.Value("string")),
                         "answer": datasets.Value("string"),
                     }
                 ),
@@ -848,8 +677,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        my_urls = ZIP_URL
-        archive = dl_manager.download(my_urls)
+        archive = ZIP_DIR + "/" + ZIP_FILENAME
         splits = [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
@@ -882,7 +710,6 @@ class BabiQa(datasets.GeneratorBasedBuilder):
         return splits
 
     def _generate_examples(self, filepath, files):
-
         for path, f in files:
             if path == filepath:
                 story = []
@@ -906,9 +733,10 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 1,  # question
-                                    "supporting_ids": line_split[-1].split(" "),
+                                    "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
+                                    "slots": str_to_slots(line_split[0]),
                                 }
                             )
                         else:
@@ -916,9 +744,10 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 0,  # context
-                                    "supporting_ids": [],
+                                    "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
+                                    "slots": str_to_slots(line_split[0]),
                                 }
                             )
                     else:
@@ -929,9 +758,10 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 1,  # question
-                                    "supporting_ids": line_split[-1].split(" "),
+                                    "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
+                                    "slots": [],
                                 }
                             )
                         else:
@@ -939,12 +769,46 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 {
                                     "id": line_no,
                                     "type": 0,  # context
-                                    "supporting_ids": [],
+                                    "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
+                                    "slots": str_to_slots(line_split[0])
                                 }
                             )
                 else:  # After last line
                     if story != []:
                         yield example_idx, {"story": story}
                 break
+
+    def get_data_files(self):
+        data_files = {
+            "train": paths[self.config.type][self.config.task_no]["train"],
+            "test": paths[self.config.type][self.config.task_no]["test"],
+        }
+        if "valid" in self.config.type:
+            data_files["valid"] = paths[self.config.type][self.config.task_no]["valid"],
+        return data_files
+
+
+    def raw_to_json(self):
+        dataset_json = {}
+
+        for split, filepath in self.get_data_files().items():
+            filepath = os.path.join(ZIP_DIR, filepath)
+            #print(filepath)
+            files = [(filepath, open(filepath, "rb"))]
+            stories = []
+
+            for _, dictionary in self._generate_examples(filepath=filepath, files=files):
+                raw_story = dictionary["story"]
+                # defaultdict: creates an empty list the first time the key is accessed
+                item = defaultdict(list)
+
+                for line in raw_story:
+                    for k, v in line.items(): item[k].append(v)
+
+                # Let's convert it back to a regular dict
+                story = dict(item)
+                stories.append(story)
+            dataset_json[split] = stories
+        return dataset_json

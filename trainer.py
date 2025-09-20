@@ -15,7 +15,7 @@ def create_test_args() -> list:
     return [
         "trainer.py",
         "gpt2",
-        #"-dataset", "ext", # switch ext->babi
+        "-task_number", "2",
         "-lr", "3e-4",
         "-epoch", "3",
         "-batch_size", "8",
@@ -24,7 +24,7 @@ def create_test_args() -> list:
 
 parser = argparse.ArgumentParser()
 parser.add_argument("model_name_or_id")
-parser.add_argument("-dataset", default="qa", type=str)
+parser.add_argument("-task_number", default=2, type=int)
 parser.add_argument('-lr', default=3e-4, type=float)
 parser.add_argument('-batch_size', default=6, type=int)
 parser.add_argument('-epoch', default=3, type=int)
@@ -32,7 +32,7 @@ parser.add_argument('-ga', '--gradient_accumulation', default=1, type=int)
 
 
 class Trainer(DefaultTrainer):
-    def create_scheduler(self, num_training_steps: int, optimizer: torch.optim.Optimizer = None):
+    def create_scheduler(self,  num_training_steps: int, optimizer: torch.optim.Optimizer = None):
         """
         disable scheduler
         """
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     model = AutoModelForCausalLM.from_pretrained(args.model_name_or_id)
     model.to(device)
 
-    train_dataset, test_dataset = make_dataset(2)
+    train_dataset, test_dataset = make_dataset(args.task_number)
 
     training_args = TrainingArguments(
         output_dir=model_dir,
