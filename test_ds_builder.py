@@ -28,9 +28,10 @@ if __name__ == "__main__":
                 item[k].append(v)
 
         # Let's convert it back to a regular dict
-        item = dict(item)
+        story = dict(item)
 
-        print("---------------------------------------\nitem:", item)
+        print("---------------------------------------\nitem:", story)
+        stories.append(story)
 
 
     with open("babi_qa/test-items.json", "w", encoding="utf-8") as f:
