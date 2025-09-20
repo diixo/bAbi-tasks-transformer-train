@@ -17,6 +17,7 @@
 import os
 import datasets
 from collections import defaultdict
+from utils import str_to_slots
 
 
 _CITATION = """\
@@ -735,6 +736,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                     "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
+                                    "slots": str_to_slots(line_split[0]),
                                 }
                             )
                         else:
@@ -745,6 +747,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                     "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
+                                    "slots": str_to_slots(line_split[0]),
                                 }
                             )
                     else:
@@ -758,6 +761,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                     "answer_ids": line_split[-1].split(" "),
                                     "text": line_split[0].strip(),
                                     "answer": line_split[1].strip(),
+                                    "slots": [],
                                 }
                             )
                         else:
@@ -768,6 +772,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                     "answer_ids": [],
                                     "text": line_split[0].strip(),
                                     "answer": "",
+                                    "slots": str_to_slots(line_split[0])
                                 }
                             )
                 else:  # After last line

@@ -311,3 +311,32 @@
 13 John went back to the garden.
 14 John moved to the bedroom.
 15 Where is Sandra? 	bathroom	8
+1 John went back to the garden.
+2 Mary journeyed to the bedroom.
+3 Daniel journeyed to the office.
+4 Sandra moved to the office.
+5 Mary journeyed to the office.
+6 Sandra journeyed to the bedroom.
+7 John went back to the office.
+8 Daniel went to the bathroom.
+9 Sandra journeyed to the garden.
+10 Mary moved to the hallway.
+11 Sandra moved to the bedroom.
+12 Mary moved to the bedroom.
+13 Daniel grabbed the football there.
+14 Mary travelled to the bathroom.
+15 Mary got the apple there.
+16 Mary went to the bedroom.
+17 Where is the apple? 	bedroom	15 16
+18 Daniel journeyed to the bedroom.
+19 Daniel discarded the football.
+20 Where is the football? 	bedroom	19 18
+21 Mary travelled to the hallway.
+22 John journeyed to the kitchen.
+23 Where is the football? 	bedroom	19 18
+24 Sandra took the football there.
+25 Sandra dropped the football.
+26 Where is the football? 	bedroom	25 11
+27 Sandra moved to the office.
+28 John journeyed to the hallway.
+29 Where is the football? 	bedroom	25 11

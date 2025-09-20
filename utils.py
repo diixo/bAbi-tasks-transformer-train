@@ -74,6 +74,7 @@ def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
                 name = line.split()[0]
                 if holders.get(obj) == name:
                     del holders[obj]
+                    # TODO:
                     # объект остаётся в текущей локации персонажа
                     #slots[obj] = {"location": slots[name]["location"]}
 
@@ -85,16 +86,66 @@ def parse_to_slots(story: str, objects=("football", "milk", "apple"), normalizat
                 if holder in slots and "location" in slots[holder]:
                     slots[obj] = {"location": slots[holder]["location"]}
 
-    #print(slots)
+    # print(story)
+    # print(slots)
     return dict_to_str(slots)
+
+
+def str_to_slots(line: str, objects=("football", "milk", "apple")):
+        line = line.strip()
+
+        m = re.match(r"(\w+) (moved|journeyed|went|travelled).* to the (\w+)", line)
+        if m:
+            name, _, place = m.groups()
+            return [ name, "location", place, ]
+
+        for obj in objects:
+            if re.search(fr"(\w+) (got|took|grabbed|picked up) the {obj}", line):
+                name = line.split()[0]
+                return [ obj, "with", name ]
+
+        for obj in objects:
+            if re.search(fr"(\w+) (dropped|left|discarded|put down) the {obj}", line):
+                name = line.split()[0]
+                return [ obj, "with", ""]
 
 
 def test():
 
-    story = """Daniel went to the bedroom. Daniel picked up the apple there. Mary grabbed the milk there. Mary left the milk. John journeyed to the office. Daniel put down the apple there."""
+    story = """
+John went back to the garden.
+Mary journeyed to the bedroom.
+Daniel journeyed to the office.
+Sandra moved to the office.
+Mary journeyed to the office.
+Sandra journeyed to the bedroom.
+John went back to the office.
+Daniel went to the bathroom.
+Sandra journeyed to the garden.
+ Mary moved to the hallway.
+ Sandra moved to the bedroom.
+ Mary moved to the bedroom.
+ Daniel grabbed the football there.
+ Mary travelled to the bathroom.
+ Mary got the apple there.
+ Mary went to the bedroom.
+ Daniel journeyed to the bedroom.
+ Daniel discarded the football.
+ Mary travelled to the hallway.
+ John journeyed to the kitchen.
+ Sandra took the football there.
+ Sandra dropped the football.
+ Sandra moved to the office.
+ John journeyed to the hallway."""
 
     slots = parse_to_slots(story)
     print(slots)
+
+    for line in story.strip().split("."):
+        if line:
+            slots = str_to_slots(line)
+            print(line)
+            print(slots)
 
 
 if __name__ == "__main__":
