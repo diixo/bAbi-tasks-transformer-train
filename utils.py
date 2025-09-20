@@ -113,18 +113,9 @@ def str_to_slots(line: str, objects=("football", "milk", "apple")):
 def test():
 
     story = """
-John went back to the garden.
-Mary journeyed to the bedroom.
-Daniel journeyed to the office.
-Sandra moved to the office.
-Mary journeyed to the office.
-Sandra journeyed to the bedroom.
-John went back to the office.
 Daniel went to the bathroom.
 Sandra journeyed to the garden.
  Mary moved to the hallway.
- Sandra moved to the bedroom.
- Mary moved to the bedroom.
  Daniel grabbed the football there.
  Mary travelled to the bathroom.
  Mary got the apple there.
