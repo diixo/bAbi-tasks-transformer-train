@@ -1,5 +1,7 @@
 
 from datasets import load_dataset, load_dataset_builder
+import json
+from collections import defaultdict
 
 
 if __name__ == "__main__":
@@ -13,6 +15,23 @@ if __name__ == "__main__":
     filepath = "babi_qa/test-items.txt"
     files = [(filepath, open(filepath, "rb"))]
 
-    for key, value in builder._generate_examples(filepath=filepath, files=files):
-        print("Key:", key)
-        print("Value:", value)
+    stories = []
+
+    for id, dictionary in builder._generate_examples(filepath=filepath, files=files):
+        raw_story = dictionary["story"]
+
+        # defaultdict: creates an empty list the first time the key is accessed
+        item = defaultdict(list)
+
+        for line in raw_story:
+            for k, v in line.items():
+                item[k].append(v)
+
+        # Let's convert it back to a regular dict
+        item = dict(item)
+
+        print("---------------------------------------\nitem:", item)
+
+
+    with open("babi_qa/test-items.json", "w", encoding="utf-8") as f:
+        json.dump(stories, f, ensure_ascii=False, indent=2)

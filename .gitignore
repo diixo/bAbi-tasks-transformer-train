@@ -9,3 +9,4 @@ my-model/*
 eval_results/
 eval-results/
 gpt2-babi/
+test-*.json
