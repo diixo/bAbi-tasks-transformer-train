@@ -610,17 +610,69 @@ def story_to_slots(story: list, normalization = False) -> str:
     return dict_to_str(slots)
 
 
-def story_to_turns(story: list) -> list:
-    """create new slots for every turn
-input:
-### new context
-### slots
+def story_to_turns(story: list, normalization = False) -> list:
 
-output:
-### slots
-new slots  
-    """
-    return []
+    slots = {}
+    holders = {}
+    turns = []
+
+    for line in story:
+        line = line.strip()
+
+        if len(turns) > 0:
+            turns_in = f"### Context:\n{line}\n\n### Slots:\n{dict_to_str(slots)}\n"
+        else:
+            turns_in = f"### Context:\n{line}"
+
+        # убираем номер в начале
+        if re.match(r"^\d+", line):
+            line = " ".join(line.split()[1:])
+
+        # перемещение персонажа
+        m = re.match(r"(\w+) (moved|journeyed|went|travelled).* to the (\w+)", line)
+        if m:
+            name, _, place = m.groups()
+            slots[name] = {"location": place}
+            # обновляем предметы, которые у этого персонажа
+            # TODO: ??? не меняем локацию предметов владельца, чтобы модель сама догадалась по аттрибуту with?
+            if normalization:
+                for obj, holder in holders.items():
+                    if holder == name:
+                        slots[obj] = {"location": place}
+
+        # персонаж взял объект
+        for obj in objects:
+            if re.search(fr"(\w+) (got|took|grabbed|picked up) the {obj}", line):
+                name = line.split()[0]
+                holders[obj] = name
+                slots[obj] = {"with": name}
+
+        # персонаж положил объект
+        for obj in objects:
+            if re.search(fr"(\w+) (dropped|left|discarded|put down) the {obj}", line):
+                name = line.split()[0]
+                if holders.get(obj) == name:
+                    del holders[obj]
+                    # TODO:
+                    # объект остаётся в текущей локации персонажа
+                    if name in slots:
+                        if "location" in slots[name]:
+                            slots[obj] = {"location": slots[name]["location"]}
+
+        # финальная нормализация: все "with" → "location"
+        if normalization:
+            for obj, state in slots.items():
+                if "with" in state:
+                    holder = state["with"]
+                    if holder in slots and "location" in slots[holder]:
+                        slots[obj] = {"location": slots[holder]["location"]}
+
+        turns_out = f"### Slots:\n{dict_to_str(slots)}"
+        #print(turns_in)
+        #print(turns_out)
+        turns.append((turns_in, turns_out))
+
+    return turns
 
 
 def load_babi_txt(file_path: str) -> list:
@@ -682,6 +734,6 @@ class BabiqaText():
 
 if __name__ == "__main__":
 
-    babi = BabiqaText(None, "qa1", "train")
+    babi = BabiqaText(None, "qa2", "train")
     print(babi.get_raw_sz())
     print(babi.filepath)
