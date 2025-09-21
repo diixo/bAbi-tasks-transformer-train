@@ -1,5 +1,6 @@
 from datasets import load_dataset   
 from transformers import PreTrainedTokenizer
+import torch
 
 
 INPUT_TEMPLATE = """
@@ -64,8 +65,8 @@ class BabiqaDatasetEval():
             cqa["answer"] = ""
         
         input_text = INPUT_TEMPLATE.format_map(cqa).strip()
-        encodings = self.tokenizer(input_text, truncation=True, max_length=384, return_tensors="pt")
-        encodings["labels"] = encodings["input_ids"].clone()
+        encodings = self.tokenizer(input_text, truncation=True, max_length=1000, add_special_tokens=False, return_tensors="pt")
+        encodings["labels"] = torch.full_like(encodings["input_ids"], fill_value=-100)
         return {
             "input_ids": encodings["input_ids"],
             "labels": encodings["labels"]
