@@ -3,11 +3,17 @@ import re
 
 
 def dict_to_str(dictionary: dict):
-    slot_str = " ".join(
-        f"{name}=" + " ".join(f"{k}:{v};" for k, v in attrs.items())
-        for name, attrs in dictionary.items()
-    )
-    return slot_str
+    # slot_str = " ".join(
+    #     f"{name}=" + " ".join(f"{k}:{v};" for k, v in attrs.items())
+    #     for name, attrs in dictionary.items()
+    # )
+    slots = []
+    for entity, attrs in dictionary.items():
+        for k, v in attrs.items():
+            slots.append(f"{entity}={k}:{v};")
+
+    text = " ".join(slots)
+    return text
 
 
 paths = {
@@ -634,11 +640,9 @@ def story_to_turns(story: list, normalization = False) -> list:
             name, _, place = m.groups()
             slots[name] = {"location": place}
             # обновляем предметы, которые у этого персонажа
-            # TODO: ??? не меняем локацию предметов владельца, чтобы модель сама догадалась по аттрибуту with?
-            if normalization:
-                for obj, holder in holders.items():
-                    if holder == name:
-                        slots[obj] = {"location": place}
+            for obj, holder in holders.items():
+                if holder == name:
+                    slots[obj] = {"location": place}
 
         # персонаж взял объект
         for obj in objects:
@@ -657,19 +661,20 @@ def story_to_turns(story: list, normalization = False) -> list:
                     # объект остаётся в текущей локации персонажа
                     if name in slots:
                         if "location" in slots[name]:
-                            slots[obj] = {"location": slots[name]["location"]}
+                            slots[obj]["location"] = slots[name]["location"]
+                            slots[obj]["with"] = ""
 
         # финальная нормализация: все "with" → "location"
-        if normalization:
-            for obj, state in slots.items():
-                if "with" in state:
-                    holder = state["with"]
-                    if holder in slots and "location" in slots[holder]:
-                        slots[obj] = {"location": slots[holder]["location"]}
+        for obj, state in slots.items():
+            if "with" in state:
+                holder = state["with"]
+                if holder in slots and "location" in slots[holder]:
+                    slots[obj]["location"] = slots[holder]["location"]
 
         turns_out = f"### Slots:\n{dict_to_str(slots)}"
-        #print(turns_in)
-        #print(turns_out)
+        print("-------------------------------------")
+        # print(f"-->>\n{turns_in}")
+        # print(f"<<--\n{turns_out}")
         turns.append((turns_in, turns_out))
 
     return turns
@@ -697,20 +702,20 @@ def load_babi_txt(file_path: str) -> list:
                 # construct prompt: whole history before question
                 #story = ' '.join(story_lines)
                 slots = story_to_slots(story_lines)
-                #TODO:
-                turns = story_to_turns(story_lines)
                 examples.append({
                     'story': story_lines,
                     'question': question,
                     'answer': answer,
                     "slots": slots,
-                    "turns": turns,
                 })
             else:
                 story_lines.append(text)
 
             # reset history by new episode (new marker == 1)
             if idx == 1:
+                if len(story_lines) > 1:
+                    turns = story_to_turns(story_lines)
+                    for turn in turns: print(turn)
                 story_lines = [text]
     return examples
 
