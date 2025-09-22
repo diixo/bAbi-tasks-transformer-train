@@ -622,7 +622,7 @@ def story_to_turns(story: list, normalization = False) -> list:
     holders = {}
     turns = []
 
-    for line in story:
+    for id, line in enumerate(story):
         line = line.strip()
 
         if len(turns) > 0:
@@ -634,15 +634,21 @@ def story_to_turns(story: list, normalization = False) -> list:
         if re.match(r"^\d+", line):
             line = " ".join(line.split()[1:])
 
+        #print(id, "-------------------------------------------------")
+        #print(line)
+
         # перемещение персонажа
         m = re.match(r"(\w+) (moved|journeyed|went|travelled).* to the (\w+)", line)
         if m:
             name, _, place = m.groups()
-            slots[name] = {"location": place}
+            if name in slots:
+                slots[name]["location"] = place
+            else:
+                slots[name] = {"location": place}
             # обновляем предметы, которые у этого персонажа
             for obj, holder in holders.items():
                 if holder == name:
-                    slots[obj] = {"location": place}
+                    slots[obj]["location"] = place
 
         # персонаж взял объект
         for obj in objects:
@@ -650,6 +656,7 @@ def story_to_turns(story: list, normalization = False) -> list:
                 name = line.split()[0]
                 holders[obj] = name
                 slots[obj] = {"with": name}
+                slots[name]["with"] = obj
 
         # персонаж положил объект
         for obj in objects:
@@ -662,7 +669,8 @@ def story_to_turns(story: list, normalization = False) -> list:
                     if name in slots:
                         if "location" in slots[name]:
                             slots[obj]["location"] = slots[name]["location"]
-                            slots[obj]["with"] = ""
+                            del slots[obj]["with"]
+                            del slots[name]["with"]
 
         # финальная нормализация: все "with" → "location"
         for obj, state in slots.items():
@@ -672,7 +680,6 @@ def story_to_turns(story: list, normalization = False) -> list:
                     slots[obj]["location"] = slots[holder]["location"]
 
         turns_out = f"### Slots:\n{dict_to_str(slots)}"
-        print("-------------------------------------")
         # print(f"-->>\n{turns_in}")
         # print(f"<<--\n{turns_out}")
         turns.append((turns_in, turns_out))
