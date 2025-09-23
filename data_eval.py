@@ -1,5 +1,6 @@
 from datasets import load_dataset   
 from transformers import PreTrainedTokenizer
+import torch
 
 
 INPUT_TEMPLATE = """
@@ -34,14 +35,22 @@ def get_next_qa(dataset):
 
 class BabiqaDatasetEval():
 
-    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False, return_object=False) -> None:
+    def __init__(self, tokenizer, task_no="qa1", split="train", no_answer=False) -> None:
 
         dataset = load_dataset('babi_qa', type='en', task_no=task_no, trust_remote_code=True)[split]
         self.data = list(get_next_qa(dataset))
 
         self.tokenizer: PreTrainedTokenizer = tokenizer
         self.no_answer = no_answer
-        self.return_object = return_object
+
+
+    def get_object(self, index):
+        context, question, answer = self.data[index]
+        return {
+            "context": context,
+            "question": question,
+            "answer": answer
+        }
 
 
     def __getitem__(self, index):
@@ -54,13 +63,10 @@ class BabiqaDatasetEval():
 
         if self.no_answer:
             cqa["answer"] = ""
-
-        if self.return_object:
-            return cqa
         
         input_text = INPUT_TEMPLATE.format_map(cqa).strip()
-        encodings = self.tokenizer(input_text, truncation=True, max_length=384, return_tensors="pt")
-        encodings["labels"] = encodings["input_ids"].clone()
+        encodings = self.tokenizer(input_text, truncation=True, max_length=1000, add_special_tokens=False, return_tensors="pt")
+        encodings["labels"] = torch.full_like(encodings["input_ids"], fill_value=-100)
         return {
             "input_ids": encodings["input_ids"],
             "labels": encodings["labels"]
